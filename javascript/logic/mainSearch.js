@@ -1,20 +1,25 @@
-
-
 searchInput.addEventListener('input', function () {
     handleSearch();
 });
 
-// array method main search 
+/* for loop main search*/
 function handleSearch() {
     const userInput = searchInput.value.toLowerCase();
     if (userInput.length >= 3) {
         selectedFilters = [];
-        results = recipes.filter(recipe => {
+        results = [];
+
+        for (let i = 0; i < recipes.length; i++) {
+            const recipe = recipes[i];
             const titleMatch = recipe.name.toLowerCase().includes(userInput);
             const ingredientsMatch = recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(userInput));
             const descriptionMatch = recipe.description.toLowerCase().includes(userInput);
-            return titleMatch || ingredientsMatch || descriptionMatch;
-        });
+
+            if (titleMatch || ingredientsMatch || descriptionMatch) {
+                results.push(recipe);
+            }
+        }
+
         updateSearchResults(results);
         populateCards(results);
     } else {
@@ -22,24 +27,33 @@ function handleSearch() {
     }
 }
 
-/*  array method filters search */
+// FOR loop
 function searchByFilters(selectedFilters) {
-    results = recipes.filter(recipe => {
-      return selectedFilters.every(filter => {
-        if (recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(filter.toLowerCase()))) {
-          return true;
-        } else if (recipe.appliance.toLowerCase().includes(filter.toLowerCase())) {
-          return true;
-        } else if (recipe.ustensils.some(ustensil => ustensil.toLowerCase().includes(filter.toLowerCase()))) {
-          return true;
-        } else {
-          return false;
+    let results = [];
+    for (const recipe of recipes) {
+        let filterMatch = true;
+        for (const filter of selectedFilters) {
+            if (
+                !(
+                    recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(filter.toLowerCase())) ||
+                    recipe.appliance.toLowerCase().includes(filter.toLowerCase()) ||
+                    recipe.ustensils.some(ustensil => ustensil.toLowerCase().includes(filter.toLowerCase()))
+                )
+            ) {
+                filterMatch = false;
+                break;
+            }
         }
-      });
-    });
+
+        if (filterMatch) {
+            results.push(recipe);
+        }
+    }
     updateSearchResults(results);
     populateCards(results);
-  }
+}
+
+
 
 function updateSearchResults(results) {
     const uniqueIngredients = getUniqueIngredients(results);
@@ -111,5 +125,3 @@ function updateDropdownOptions(dropdownNumber, options, property) {
         dropdown.appendChild(optionElement);
     });
 }
-
-
