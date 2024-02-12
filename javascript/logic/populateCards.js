@@ -32,7 +32,7 @@ function createRecipeCard(recipe, index) {
     const article = document.createElement('article');
     article.classList.add('recipes-card');
     const image = document.createElement('img');
-    image.src = `./images/Recettes/${recipe.image}`;
+    image.src = `./images/recipes/${recipe.image}`;
     image.alt = recipe.name;
     image.classList.add('recipe-image');
     const recipeTime = document.createElement('div');
